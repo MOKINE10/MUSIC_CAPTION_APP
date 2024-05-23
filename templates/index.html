@@ -35,6 +35,14 @@
         .caption-container {
             width: 50%;
         }
+        .preview-on {
+            background-color: green;
+            color: white;
+        }
+        .preview-off {
+            background-color: red;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -70,7 +78,7 @@
         </div>
         <div class="preview-container">
             <div id="previewWindow"></div>
-            <button onclick="togglePreview()">Preview ON/OFF</button>
+            <button id="previewButton" class="preview-off" onclick="togglePreview()">Preview OFF</button>
         </div>
     </div>
     <br><br>
@@ -84,6 +92,7 @@
         let audioDuration = 0;
         let previewEnabled = false;
         let previewWindow = document.getElementById('previewWindow');
+        let previewButton = document.getElementById('previewButton');
 
         fileInput.addEventListener('change', function(event) {
             let file = event.target.files[0];
@@ -211,9 +220,15 @@
             previewEnabled = !previewEnabled;
             if (previewEnabled) {
                 audioPlayer.addEventListener('timeupdate', updatePreview);
+                previewButton.textContent = 'Preview ON';
+                previewButton.classList.remove('preview-off');
+                previewButton.classList.add('preview-on');
             } else {
                 audioPlayer.removeEventListener('timeupdate', updatePreview);
                 previewWindow.innerHTML = "";
+                previewButton.textContent = 'Preview OFF';
+                previewButton.classList.remove('preview-on');
+                previewButton.classList.add('preview-off');
             }
         }
 
