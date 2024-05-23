@@ -4,254 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music Caption App</title>
-    <style>
-        .button-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        #mainContent {
-            display: flex;
-            justify-content: space-between;
-            width: 90%;
-        }
-        #previewWindow {
-            border: 1px solid black;
-            padding: 10px;
-            width: 50%;
-            height: 200px;
-            overflow-y: auto;
-            margin-top: 20px;
-        }
-        textarea, audio {
-            margin-bottom: 20px;
-        }
-        .preview-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 50%;
-        }
-        .caption-container {
-            width: 50%;
-        }
-        .preview-on {
-            background-color: green;
-            color: white;
-        }
-        .preview-off {
-            background-color: red;
-            color: white;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Music Caption App</h1>
-    <input type="file" id="fileInput" accept="audio/mp3">
-    <br><br>
-    <audio id="audioPlayer" controls></audio>
-    <br><br>
-    <div class="button-container">
-        <button onclick="setPlaybackRate(1)">1x</button>
-        <button onclick="setPlaybackRate(1.5)">1.5x</button>
-        <button onclick="setPlaybackRate(2)">2x</button>
-        <button onclick="saveCaptions()">Save Captions</button>
-        <button onclick="addTimestamp()">Add Timestamp</button>
-        <button onclick="undoTimestamp()">Undo</button>
-        <button onclick="deleteMp3()">Delete</button>
-        <button onclick="downloadSRT()">Download SRT</button>
-    </div>
-    <br><br>
-    <div id="mainContent">
-        <div class="caption-container">
-            <textarea id="captionInput" rows="10" cols="50" placeholder="Paste your captions here..."></textarea>
-            <br><br>
-            <table id="captionTable" border="1">
-                <thead>
-                    <tr>
-                        <th>Timestamp</th>
-                        <th>Text</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+    <header>
+        <h1>Music Caption App</h1>
+    </header>
+    <main>
+        <input type="file" id="fileInput" accept="audio/mp3">
+        <audio id="audioPlayer" controls></audio>
+        <div class="button-container">
+            <button onclick="setPlaybackRate(1)">1x</button>
+            <button onclick="setPlaybackRate(1.5)">1.5x</button>
+            <button onclick="setPlaybackRate(2)">2x</button>
+            <button onclick="rewind()">-2s</button>
+            <button onclick="saveCaptions()">Save Captions</button>
+            <button onclick="addTimestamp()">Add Timestamp</button>
+            <button onclick="undoTimestamp()">Undo</button>
+            <button onclick="deleteMp3()">Delete</button>
+            <button onclick="downloadSRT()">Download SRT</button>
         </div>
-        <div class="preview-container">
-            <div id="previewWindow"></div>
-            <button id="previewButton" class="preview-off" onclick="togglePreview()">Preview OFF</button>
+        <div id="mainContent">
+            <div class="caption-container">
+                <textarea id="captionInput" rows="10" placeholder="Paste your captions here..."></textarea>
+                <table id="captionTable" border="1">
+                    <colgroup>
+                        <col style="width: 12%">
+                        <col style="width: 88%">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Text</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="preview-container">
+                <div id="previewWindow"></div>
+                <button id="previewButton" class="preview-off" onclick="togglePreview()">Preview OFF</button>
+            </div>
         </div>
-    </div>
-    <br><br>
-
-    <script>
-        let audioPlayer = document.getElementById('audioPlayer');
-        let fileInput = document.getElementById('fileInput');
-        let captionInput = document.getElementById('captionInput');
-        let captionTable = document.getElementById('captionTable').getElementsByTagName('tbody')[0];
-        let uploadedFilename = '';
-        let audioDuration = 0;
-        let previewEnabled = false;
-        let previewWindow = document.getElementById('previewWindow');
-        let previewButton = document.getElementById('previewButton');
-
-        fileInput.addEventListener('change', function(event) {
-            let file = event.target.files[0];
-            if (file) {
-                let formData = new FormData();
-                formData.append('file', file);
-
-                fetch('/upload', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.filename) {
-                        audioPlayer.src = `/uploads/${data.filename}`;
-                        uploadedFilename = data.filename;
-                        audioDuration = data.duration;
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-            }
-        });
-
-        function setPlaybackRate(rate) {
-            audioPlayer.playbackRate = rate;
-        }
-
-        function saveCaptions() {
-            let captions = captionInput.value.split('\n');
-            captionTable.innerHTML = "";
-            captions.forEach((caption, index) => {
-                let row = captionTable.insertRow(index);
-                let timestampCell = row.insertCell(0);
-                let textCell = row.insertCell(1);
-                timestampCell.innerHTML = "";
-                textCell.innerHTML = caption;
-                textCell.contentEditable = true;
-            });
-        }
-
-        function addTimestamp() {
-            let currentTime = audioPlayer.currentTime;
-            fetch('/timestamp', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `current_time=${currentTime}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                let rows = captionTable.rows;
-                for (let i = 0; i < rows.length; i++) {
-                    if (rows[i].cells[0].innerHTML === "") {
-                        rows[i].cells[0].innerHTML = formatTime(data.timestamp);
-                        break;
-                    }
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-        function formatTime(seconds) {
-            let date = new Date(0);
-            date.setMilliseconds(seconds * 1000);
-            return date.toISOString().substr(11, 12).replace('.', ',');
-        }
-
-        function downloadSRT() {
-            let captions = [];
-            let rows = captionTable.rows;
-            for (let i = 0; i < rows.length; i++) {
-                let timestamp = rows[i].cells[0].innerHTML;
-                let text = rows[i].cells[1].innerHTML;
-                let endTimestamp = (i < rows.length - 1) ? rows[i + 1].cells[0].innerHTML : formatTime(audioDuration);
-                captions.push({ timestamp: timestamp, end_timestamp: endTimestamp, text: text });
-            }
-
-            let srt_content = "";
-            for (let i = 0; i < captions.length; i++) {
-                srt_content += `${i+1}\n${captions[i].timestamp} --> ${captions[i].end_timestamp}\n${captions[i].text}\n\n`;
-            }
-
-            let blob = new Blob([srt_content], { type: 'text/srt' });
-            let url = URL.createObjectURL(blob);
-            let a = document.createElement('a');
-            a.href = url;
-            a.download = 'captions.srt';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
-
-        function undoTimestamp() {
-            let rows = captionTable.rows;
-            for (let i = rows.length - 1; i >= 0; i--) {
-                if (rows[i].cells[0].innerHTML !== "") {
-                    rows[i].cells[0].innerHTML = "";
-                    break;
-                }
-            }
-        }
-
-        function deleteMp3() {
-            if (uploadedFilename) {
-                fetch('/delete_mp3', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `filename=${uploadedFilename}`
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        audioPlayer.src = "";
-                        uploadedFilename = "";
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-            }
-        }
-
-        function togglePreview() {
-            previewEnabled = !previewEnabled;
-            if (previewEnabled) {
-                audioPlayer.addEventListener('timeupdate', updatePreview);
-                previewButton.textContent = 'Preview ON';
-                previewButton.classList.remove('preview-off');
-                previewButton.classList.add('preview-on');
-            } else {
-                audioPlayer.removeEventListener('timeupdate', updatePreview);
-                previewWindow.innerHTML = "";
-                previewButton.textContent = 'Preview OFF';
-                previewButton.classList.remove('preview-on');
-                previewButton.classList.add('preview-off');
-            }
-        }
-
-        function updatePreview() {
-            let currentTime = audioPlayer.currentTime;
-            let rows = captionTable.rows;
-            for (let i = 0; i < rows.length; i++) {
-                let start = timeStringToSeconds(rows[i].cells[0].innerHTML);
-                let end = i < rows.length - 1 ? timeStringToSeconds(rows[i + 1].cells[0].innerHTML) : Number.MAX_VALUE;
-                if (currentTime >= start && currentTime < end) {
-                    previewWindow.innerHTML = rows[i].cells[1].innerHTML;
-                    break;
-                } else {
-                    previewWindow.innerHTML = "";
-                }
-            }
-        }
-
-        function timeStringToSeconds(timeString) {
-            let parts = timeString.split(':');
-            let secondsParts = parts[2].split(',');
-            return parseInt(parts[0], 10) * 3600 + parseInt(parts[1], 10) * 60 + parseFloat(secondsParts[0]) + parseFloat(secondsParts[1]) / 1000;
-        }
-    </script>
+    </main>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
