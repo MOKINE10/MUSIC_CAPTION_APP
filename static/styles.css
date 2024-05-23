@@ -1,5 +1,5 @@
 :root {
-    --primary-color: #4ee1d2;;
+    --primary-color: #4ee1d2;
     --off-color: #545454;
     --on-color: #e96b5a;
     --background-color: #f5f5f5;
@@ -96,10 +96,25 @@ textarea {
     box-sizing: border-box;
 }
 
+.save-button {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: none;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin: 10px 0;
+}
+
+.save-button:hover {
+    background-color: var(--button-hover-bg-color);
+}
+
 table#captionTable {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.4em;
+    font-size: 0.4em; /* 文字サイズを縮小 */
     margin-top: 20px;
 }
 
