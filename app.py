@@ -1,18 +1,17 @@
-from flask import Flask, request, render_template, jsonify, send_from_directory, send_file
+from flask import Flask, render_template, request, jsonify, send_from_directory
 from pydub import AudioSegment
 import os
-import json
-
-# pydubにffmpegのパスを設定
-from pydub.utils import which
-AudioSegment.converter = which("ffmpeg")
-AudioSegment.ffprobe = which("ffprobe")
 
 app = Flask(__name__)
 
 UPLOAD_FOLDER = 'uploads'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
+
+# pydubにffmpegのパスを設定
+from pydub.utils import which
+AudioSegment.converter = which("ffmpeg")
+AudioSegment.ffprobe = which("ffprobe")
 
 @app.route('/')
 def index():
