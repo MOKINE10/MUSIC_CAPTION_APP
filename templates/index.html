@@ -19,7 +19,6 @@
             <button onclick="setPlaybackRate(1.5)">1.5x</button>
             <button onclick="setPlaybackRate(2)">2x</button>
             <button onclick="rewind()">-2s</button>
-            <button onclick="saveCaptions()">Save Captions</button>
             <button onclick="addTimestamp()">Add Timestamp</button>
             <button onclick="undoTimestamp()">Undo</button>
             <button onclick="deleteMp3()">Delete</button>
@@ -28,6 +27,7 @@
         <div id="mainContent">
             <div class="caption-container">
                 <textarea id="captionInput" rows="10" placeholder="Paste your captions here..."></textarea>
+                <button class="save-button" onclick="saveCaptions()">Save Captions</button>
                 <table id="captionTable" border="1">
                     <colgroup>
                         <col style="width: 12%">
