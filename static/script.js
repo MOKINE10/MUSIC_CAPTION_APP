@@ -7,6 +7,7 @@ let audioDuration = 0;
 let previewEnabled = false;
 let previewWindow = document.getElementById('previewWindow');
 let previewButton = document.getElementById('previewButton');
+let srtText = document.getElementById('srtText');
 
 fileInput.addEventListener('change', function(event) {
     let file = event.target.files[0];
@@ -45,6 +46,7 @@ function saveCaptions() {
         textCell.innerHTML = caption;
         textCell.contentEditable = true;
     });
+    updateSRTText();
 }
 
 function addTimestamp() {
@@ -62,6 +64,7 @@ function addTimestamp() {
         for (let i = 0; i < rows.length; i++) {
             if (rows[i].cells[0].innerHTML === "") {
                 rows[i].cells[0].innerHTML = formatTime(data.timestamp);
+                updateSRTText();
                 break;
             }
         }
@@ -85,19 +88,38 @@ function downloadSRT() {
         captions.push({ timestamp: timestamp, end_timestamp: endTimestamp, text: text });
     }
 
-    let srt_content = "";
+    let srtContent = '';
     for (let i = 0; i < captions.length; i++) {
-        srt_content += `${i+1}\n${captions[i].timestamp} --> ${captions[i].end_timestamp}\n${captions[i].text}\n\n`;
+        srtContent += `${i + 1}\n${captions[i].timestamp} --> ${captions[i].end_timestamp}\n${captions[i].text}\n\n`;
     }
 
-    let blob = new Blob([srt_content], { type: 'text/srt' });
-    let url = URL.createObjectURL(blob);
-    let a = document.createElement('a');
-    a.href = url;
-    a.download = 'captions.srt';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    let srtBlob = new Blob([srtContent], { type: 'text/srt' });
+    let srtUrl = URL.createObjectURL(srtBlob);
+    
+    // Open a new window for download
+    let downloadWindow = window.open();
+    downloadWindow.document.write('<html><body><a id="downloadLink" download="captions.srt">Download SRT</a></body></html>');
+    downloadWindow.document.getElementById('downloadLink').href = srtUrl;
+    downloadWindow.document.getElementById('downloadLink').click();
+    downloadWindow.document.close();
+}
+
+function updateSRTText() {
+    let captions = [];
+    let rows = captionTable.rows;
+    for (let i = 0; i < rows.length; i++) {
+        let timestamp = rows[i].cells[0].innerHTML;
+        let text = rows[i].cells[1].innerHTML;
+        let endTimestamp = (i < rows.length - 1) ? rows[i + 1].cells[0].innerHTML : formatTime(audioDuration);
+        captions.push({ timestamp: timestamp, end_timestamp: endTimestamp, text: text });
+    }
+
+    let srtContent = '';
+    for (let i = 0; i < captions.length; i++) {
+        srtContent += `${i + 1}\n${captions[i].timestamp} --> ${captions[i].end_timestamp}\n${captions[i].text}\n\n`;
+    }
+
+    srtText.value = srtContent;
 }
 
 function undoTimestamp() {
@@ -105,6 +127,7 @@ function undoTimestamp() {
     for (let i = rows.length - 1; i >= 0; i--) {
         if (rows[i].cells[0].innerHTML !== "") {
             rows[i].cells[0].innerHTML = "";
+            updateSRTText();
             break;
         }
     }
@@ -168,5 +191,5 @@ function timeStringToSeconds(timeString) {
 }
 
 function rewind() {
-    audioPlayer.currentTime = Math.max(0, audioPlayer.currentTime - 2);
+    audioPlayer.currentTime = Math.max(0, audioPlayer.currentTime - 5);
 }
