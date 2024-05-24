@@ -14,20 +14,25 @@
     <main>
         <input type="file" id="fileInput" accept="audio/mp3">
         <audio id="audioPlayer" controls></audio>
-        <div class="button-container">
-            <button onclick="setPlaybackRate(1)">1x</button>
-            <button onclick="setPlaybackRate(1.5)">1.5x</button>
-            <button onclick="setPlaybackRate(2)">2x</button>
-            <button onclick="rewind()">-2s</button>
-            <button onclick="addTimestamp()">Add Timestamp</button>
-            <button onclick="undoTimestamp()">Undo</button>
-            <button onclick="deleteMp3()">Delete</button>
-            <button onclick="downloadSRT()">Download SRT</button>
-        </div>
         <div id="mainContent">
-            <div class="caption-container">
+            <div class="left-container">
+                <div class="button-container">
+                    <button onclick="setPlaybackRate(1)">1x</button>
+                    <button onclick="setPlaybackRate(1.5)">1.5x</button>
+                    <button onclick="setPlaybackRate(2)">2x</button>
+                    <button onclick="rewind()">-5s</button>
+                    <button onclick="undoTimestamp()">Undo</button>
+                    <button onclick="deleteMp3()">Delete MP3</button>
+                    <button onclick="downloadSRT()">Download SRT</button>
+                </div>
                 <textarea id="captionInput" rows="10" placeholder="Paste your captions here..."></textarea>
                 <button class="save-button" onclick="saveCaptions()">Save Captions</button>
+                <div id="previewWindow"></div>
+                <button id="previewButton" class="preview-off" onclick="togglePreview()">Preview OFF</button>
+                <textarea id="srtText" rows="10" placeholder="SRT content will appear here..." readonly></textarea>
+            </div>
+            <div class="right-container">
+                <button class="add-timestamp-button" onclick="addTimestamp()">Add Timestamp</button>
                 <table id="captionTable" border="1">
                     <colgroup>
                         <col style="width: 12%">
@@ -41,10 +46,6 @@
                     </thead>
                     <tbody></tbody>
                 </table>
-            </div>
-            <div class="preview-container">
-                <div id="previewWindow"></div>
-                <button id="previewButton" class="preview-off" onclick="togglePreview()">Preview OFF</button>
             </div>
         </div>
     </main>
