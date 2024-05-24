@@ -62,7 +62,7 @@ audio {
     align-items: center;
     justify-content: flex-start;
     min-height: 50px;
-    height: auto;
+    height: 50px;
 }
 
 .button-container button {
@@ -85,7 +85,7 @@ audio {
     align-items: center;
     gap: 20px; /* ボタン間の間隔を適度に設定 */
     min-height: 50px;
-    height: auto;
+    height: 50px;
 }
 
 .add-timestamp-button {
@@ -216,6 +216,21 @@ table#captionTable th {
 }
 
 @media (max-width: 768px) {
+    .button-container,
+    .timestamp-undo-container {
+        height: 68px; /* スマホサイズのときの高さ */
+    }
+
+    .timestamp-undo-container {
+        gap: 5px; /* ボタン間の間隔を縮小 */
+    }
+
+    .add-timestamp-button,
+    .undo-button {
+        padding: 0.3em 0.8em; /* ボタンのサイズを小さく */
+        font-size: 1em; /* フォントサイズを小さく */
+    }
+
     .delete-mp3-button {
         display: none;
     }
