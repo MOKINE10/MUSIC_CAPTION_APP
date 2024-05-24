@@ -148,7 +148,7 @@ textarea {
 table#captionTable {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.4em;
+    font-size: 0.2em;
     margin-top: 0;
     padding-top: 0;
 }
@@ -156,7 +156,7 @@ table#captionTable {
 table#captionTable th,
 table#captionTable td {
     border: 1px solid #ccc;
-    padding: 0.5em;
+    padding: 0.1em;
     text-align: left;
     background-color: var(--content-color);
 }
