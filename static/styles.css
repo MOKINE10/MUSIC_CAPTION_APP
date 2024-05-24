@@ -2,6 +2,7 @@
     --primary-color: #4ee1d2;
     --off-color: #545454;
     --on-color: #e96b5a;
+    --content-color: #fff;
     --background-color: #f5f5f5;
     --text-color: #333;
     --button-text-color: #fff;
@@ -25,14 +26,14 @@ header {
     background-color: var(--primary-color);
     color: var(--button-text-color);
     width: 100%;
-    padding: 0.5em; /* パディングを縮小 */
+    padding: 0.5em;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
     margin: 0;
-    font-size: 1.5em; /* フォントサイズを調整 */
+    font-size: 1.5em;
 }
 
 main {
@@ -58,6 +59,9 @@ audio {
     flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 1em;
+    align-items: center;
+    height: 50px;
+    justify-content: flex-start;
 }
 
 .button-container button {
@@ -67,9 +71,27 @@ audio {
     padding: 0.5em 1em;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    border-radius: 8px;
 }
 
 .button-container button:hover {
+    background-color: var(--button-hover-bg-color);
+}
+
+.add-timestamp-button {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: none;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 12px;
+    font-size: 1.2em;
+    margin-bottom: 1em;
+    height: 50px;
+}
+
+.add-timestamp-button:hover {
     background-color: var(--button-hover-bg-color);
 }
 
@@ -79,8 +101,8 @@ audio {
     width: 100%;
 }
 
-.caption-container,
-.preview-container {
+.left-container,
+.right-container {
     width: 48%;
     flex-shrink: 0;
 }
@@ -104,7 +126,8 @@ textarea {
     cursor: pointer;
     transition: background-color 0.3s ease;
     display: block;
-    margin: 10px 0;
+    margin: 0 0 3em 0;
+    border-radius: 8px;
 }
 
 .save-button:hover {
@@ -114,8 +137,9 @@ textarea {
 table#captionTable {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.4em; /* 文字サイズを縮小 */
-    margin-top: 20px;
+    font-size: 0.4em;
+    margin-top: 0;
+    padding-top: 0;
 }
 
 table#captionTable th,
@@ -123,27 +147,42 @@ table#captionTable td {
     border: 1px solid #ccc;
     padding: 0.5em;
     text-align: left;
+    background-color: var(--content-color);
 }
 
 table#captionTable th {
-    background-color: var(--primary-color);
-    color: var(--button-text-color);
+    background-color: var(--content-color);
+    color: var(--text-color);
 }
 
 #previewWindow {
     border: 1px solid #ccc;
     padding: 1em;
-    height: 200px;
+    height: 50px;
     overflow-y: auto;
     margin-bottom: 1em;
+    background-color: var(--content-color);
+}
+
+#srtText {
+    border: 1px solid #ccc;
+    padding: 1em;
+    height: 300px; /* 縦幅を3倍に設定 */
+    overflow-y: auto;
+    margin-top: 4em;
+    resize: none;
+    font-size: 0.8em;
+    font-family: monospace;
 }
 
 .preview-off {
     background-color: var(--off-color);
     color: var(--button-text-color);
+    border-radius: 8px;
 }
 
 .preview-on {
     background-color: var(--on-color);
     color: var(--button-text-color);
+    border-radius: 8px;
 }
