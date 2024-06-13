@@ -193,3 +193,10 @@ function timeStringToSeconds(timeString) {
 function rewind() {
     audioPlayer.currentTime = Math.max(0, audioPlayer.currentTime - 5);
 }
+
+document.addEventListener('keydown', function(event) {
+    if (event.code === 'Space') {
+        event.preventDefault(); // スペースキーのデフォルト動作（スクロールなど）を防ぐ
+        addTimestamp();
+    }
+});
